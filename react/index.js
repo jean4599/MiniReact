@@ -1,3 +1,5 @@
+import Component from './Component';
+
 const React = {};
 React.createElement = function(tag, attrs, ...children){
   return({
@@ -6,4 +8,6 @@ React.createElement = function(tag, attrs, ...children){
     children
   })
 }
+
+React.Component = Component;
 export default React

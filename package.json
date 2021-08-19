@@ -18,7 +18,8 @@
     "@babel/core": "^7.15.0",
     "@babel/plugin-transform-react-jsx": "^7.14.9",
     "@babel/preset-env": "^7.15.0",
-    "babel-preset-env": "^1.7.0"
+    "babel-preset-env": "^1.7.0",
+    "prettier": "^2.3.2"
   },
   "alias": {
     "react": "./react",
