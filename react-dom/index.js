@@ -38,6 +38,10 @@ export function renderComponent(component) {
   const renderer = component.render();
   base = _render(renderer);
 
+  if (component.base && component.base.parentNode) {
+    component.base.parentNode.replaceChild(base, component.base);
+  }
+
   if (component.base) {
     // Update
     component.componentDidUpdate && component.componentDidUpdate();
@@ -45,9 +49,7 @@ export function renderComponent(component) {
     // Mount
     component.componentDidMount && component.componentDidMount();
   }
-  if (component.base && component.base.parentNode) {
-    component.base.parentNode.replaceChild(base, component.base);
-  }
+
   component.base = base;
 }
 ReactDOM.render = render;
