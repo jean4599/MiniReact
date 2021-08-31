@@ -1,3 +1,4 @@
+import { renderComponent } from 'react-dom';
 export default class Component {
   constructor(props = {}) {
     this.state = {};
@@ -5,12 +6,16 @@ export default class Component {
   }
   setState(newState) {
     console.log(newState);
-    enqueueSetState(newState, this);
+    if (typeof newState === 'function') {
+      newState = newState(this.state);
+    }
+    Object.assign(this.state, newState);
+    renderComponent(this);
   }
 }
 export function createComponent(component, props) {
   let instance;
-  // TODO: how do we distinguish class component and function component
+  // distinguish class component and function component
   if (component.prototype && component.prototype.render) {
     instance = new component(props);
   } else {

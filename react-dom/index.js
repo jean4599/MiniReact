@@ -10,9 +10,8 @@ function _render(vnode) {
     return document.createTextNode(vnode);
   }
   if (typeof vnode.tag === 'function') {
-    // custom react component
     const component = createComponent(vnode.tag, vnode.attrs);
-    setComponentProps(component, vnode.attrs);
+    renderComponent(component);
     return component.base;
   }
   const dom = document.createElement(vnode.tag);
@@ -28,38 +27,28 @@ function _render(vnode) {
 function handleAttrs(dom, attr, value) {
   if (attr === 'className') {
     dom.setAttribute('class', value);
+  } else if (/on\w+/.test(attr)) {
+    dom[attr.toLowerCase()] = value;
+  } else {
+    dom.setAttribute(attr, value);
   }
 }
-
-export function setComponentProps(component, props) {
-  // TODO: React lifecycle
-  if (!component.base) {
-    if (component.componentWillMount) {
-      component.componentWillMount();
-    }
-  } else if (component.componentWillReceiveProps) {
-    component.componentWillReceiveProps(props);
-  }
-  component.props = props;
-
+export function renderComponent(component) {
   let base;
   const renderer = component.render();
-  console.log('renderer', renderer);
-  if (component.base && component.componentWillUpdate) {
-    component.componentWillUpdate();
-  }
   base = _render(renderer);
 
   if (component.base) {
-    if (component.componentDidUpdate) component.componentDidUpdate();
-    if (component.base.parentNode) {
-      component.base.parentNode.replaceChild(base, component.base);
-    }
-    component.base = base;
+    // Update
+    component.componentDidUpdate && component.componentDidUpdate();
   } else {
-    component.base = base;
+    // Mount
     component.componentDidMount && component.componentDidMount();
   }
+  if (component.base && component.base.parentNode) {
+    component.base.parentNode.replaceChild(base, component.base);
+  }
+  component.base = base;
 }
 ReactDOM.render = render;
 export default ReactDOM;
